@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>{{title}} - 虾米音乐播放器</title>
+<meta name="author" content="miantiao.me" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+<script>
+var audiocanplay = !!document.createElement("audio").canPlayType;
+if (audiocanplay == false){
+  window.location = 'http://www.xiami.com/res/app/img/swf/weibo.swf?dataUrl=http://www.xiami.com/app/player/song/id/{{id}}/type/7/uid/0';
+}  
+</script>
+<style>
+	body { margin:0;background: transparent; color: #CCC; font: 16px/1.5 Avenir,Microsoft Yahei,Hiragino Sans GB,Microsoft Sans Serif,WenQuanYi Micro Hei,sans-serif;}
+	p{
+    	margin: 0;
+    }
+    a{
+    	color: #ccc;
+    	text-decoration: none;
+    }
+    @font-face {
+    font-family: "Flaticon";
+    src: url("/static/flaticon.eot");
+    src: url("/static/flaticon.eot#iefix") format("embedded-opentype"),
+    url("/static/flaticon.woff") format("woff"),
+    url("/static/flaticon.ttf") format("truetype"),
+    url("/static/flaticon.svg") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {   
+    font-family: Flaticon;
+        font-size: 20px;
+font-style: normal;
+margin-left: 20px;
+margin-right: 20px;
+font-variant: normal;
+text-transform: none;
+}.flaticon-artist:before {
+    content: "\e000";
+}
+.flaticon-cloud136:before {
+    content: "\e001";
+}
+.flaticon-musical7:before {
+    content: "\e002";
+}
+.flaticon-pause12:before {
+    content: "\e003";
+}
+.flaticon-play43:before {
+    content: "\e004";
+}
+.flaticon-share6:before {
+    content: "\e005";
+}
+	.circle-percent { display: inline-block; position: relative; margin: 15px;  padding: 60px 0; width: 150px; height: 30px; line-height: 1; text-align: center; }
+    /*.circle-percent:before { position: relative; z-index: 3; content:''; }*/
+    .circle-percent:after, .circle-percent>div:first-child, .circle-percent>div:last-child, .circle-percent>div:first-child:after, .circle-percent>div:last-child:after { position: absolute; width: 50%; height: 100%; top: 0; left: 0; }
+    .circle-percent:after { content: ""; background: #333; }
+    .circle-percent>div:first-child, .circle-percent>div:last-child { width: 100%; }
+    .circle-percent>div:first-child { z-index: 2; }
+    .circle-percent>div:first-child:after, .circle-percent>div:last-child:after { content: ""; background: url("/static/circle.png") no-repeat 0 0; background-size: auto 100%; }
+    .circle-percent>div:first-child:after { left: auto; right: 0; background-position: 100% 0; }
+    .player{
+    	position: relative;
+    	width: 420px;
+    	height: 180px;
+    	margin: 0px auto;
+    	background: #333;
+    	border-radius: 15px;
+    }
+    #pic{
+    	position: absolute;
+    	width: 137px;
+    	height: 137px;
+    	top: 21px;
+    	left: 21px;
+    	background: url("{{songpic}}") center center;
+    	background-size: cover;
+    	border-radius: 50%;
+    	z-index: 3;
+    }
+    .rotate{
+      animation: pic 15s linear infinite;
+      -webkit-animation: pic 15s linear infinite;
+      -moz-animation: pic 15s linear infinite;
+      -ms-animation: pic 15s linear infinite;
+      -o-animation: pic 15s linear infinite;
+    }
+     @-webkit-keyframes pic {  
+     from {  
+       -webkit-transform: rotate(0deg);
+     }   
+     to {  
+       -webkit-transform: rotate(360deg);
+     } 
+ }
+      @-moz-keyframes pic {  
+     from {  
+       -moz-transform: rotate(0deg);
+     }   
+     to {  
+       -moz-transform: rotate(360deg);
+     } 
+ }
+      @-ms-keyframes pic {  
+     from {  
+       -ms-transform: rotate(0deg);
+     }   
+     to {  
+       -ms-transform: rotate(360deg);
+     } 
+ }
+      @-o-keyframes pic {  
+     from {  
+       -o-transform: rotate(0deg);
+     }   
+     to {  
+       -o-transform: rotate(360deg);
+     } 
+ }
+      @keyframes pic {  
+     from {
+      -webkit-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+       transform: rotate(0deg);
+     }   
+     to {
+      -webkit-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+      -ms-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+       transform: rotate(360deg);
+     } 
+ }
+    .info{
+    	position: absolute;
+    	top: 15px;
+    	left: 185px;
+    }
+    .title{
+    	font-weight: bold;
+      width: 210px;
+      white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+    }
+    .singer{
+    	font-size: 12px;
+      width: 210px;
+      white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+    }
+    #lyric{
+    	position: absolute;
+        bottom: 45px;
+    	left: 185px;
+    	width: 215px;
+    	height: 48px;
+    	overflow: hidden;
+  text-overflow: ellipsis;
+    	text-align: center;
+    	vertical-align: middle;
+    }
+    .control{
+    	position: absolute;
+    	bottom: 15px;
+    	left: 185px;
+    }
+    audio{
+    	display: none;
+    } 
+
+</style>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?9b5380825a2ceea0f54824d235c64eb0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+<body>
+<div class="player">
+<div class="circle-percent"></div>
+<div id="pic"></div>
+<div class="info">
+	<p class="title"><i class="flaticon-musical7"></i><a href="http://www.xiami.com/song/{{id}}" title="{{title}}">{{title}}</a></p>
+	<p class="singer"><i class="flaticon-artist"></i>{{singer}}</p>
+</div>
+<div id="lyric">{{title}}</div>
+<div class="control">
+<a href="javascript:void(0)" id="play" title="播放/暂停"><i class="flaticon-play43"></i></a>
+<a href="{{songurl}}" download="{{title}}" title="下载 {{title}}"><i class="flaticon-cloud136"></i></a> 
+<a href="http://widget.weibo.com/dialog/PublishWeb.php?app_src=6coOUz&button=publish&default_text=我正在听 {{singer}} 的《{{title}}》，你也来听听吧! http://www.xiami.com/song/{{id}} &default_image={{songpic}}" title="分享 {{title}} 到新浪微博" target="_blank"><i class="flaticon-share6"></i></a>
+</div>
+</div>
+<audio src="{{songurl}}" preload="auto"></audio>
+<script>
+function circlePercent(percent) {
+        var circle = document.querySelector(".circle-percent");
+        var percent = percent || 0;
+        var all = null;
+        var left = null;
+        var right = null;
+        if(circle !== null) {
+            all = circle.querySelectorAll("div");
+            left =  all[0] || document.createElement("div");
+            right = all[1] || document.createElement("div");
+            circle.setAttribute("percent", percent);
+            if(percent <= 50 && percent >= 0) {
+                left.style.visibility = "hidden";
+                right.style.webkitTransform = "rotate(" + percent * 3.6 + "deg)";
+                right.style.mozTransform = "rotate(" + percent * 3.6 + "deg)";
+                right.style.msTransform = "rotate(" + percent * 3.6 + "deg)";
+                right.style.oTransform = "rotate(" + percent * 3.6 + "deg)";
+                right.style.transform = "rotate(" + percent * 3.6 + "deg)";
+            } else if(percent > 50) {
+                percent = percent > 100 ? 100 : percent;
+                left.style.visibility = "visible";
+                left.style.webkitTransform = "rotate(" + (percent - 50) * 3.6 + "deg)";
+                left.style.mozTransform = "rotate(" + (percent - 50) * 3.6 + "deg)";
+                left.style.msTransform = "rotate(" + (percent - 50) * 3.6 + "deg)";
+                left.style.oTransform = "rotate(" + (percent - 50) * 3.6 + "deg)";
+                left.style.transform = "rotate(" + (percent - 50) * 3.6 + "deg)";
+                right.style.webkitTransform = "rotate(180deg)";
+                right.style.mozTransform = "rotate(180deg)";
+                right.style.msTransform = "rotate(180deg)";
+                right.style.oTransform = "rotate(180deg)";
+                right.style.transform = "rotate(180deg)";
+            }
+            !all[0] && circle.appendChild(left);
+            !all[1] && circle.appendChild(right);
+        }
+    }
+var text='{{lyric}}'
+function parseLyric(text) {
+    //将文本分隔成一行一行，存入数组
+    var lines = text.split('#'),
+        //用于匹配时间的正则表达式，匹配的结果类似[xx:xx.xx]
+        pattern = /\[\d{2}:\d{2}.\d{2,3}\]/g,
+        //保存最终结果的数组
+        result = [];
+    //去掉不含时间的行
+    while (!pattern.test(lines[0])) {
+        lines = lines.slice(1);
+    };
+    //上面用'\n'生成生成数组时，结果中最后一个为空元素，这里将去掉
+    lines[lines.length - 1].length === 0 && lines.pop();
+    lines.forEach(function(v /*数组元素值*/ , i /*元素索引*/ , a /*数组本身*/ ) {
+        //提取出时间[xx:xx.xx]
+        var time = v.match(pattern),
+            //提取歌词
+            value = v.replace(pattern, '');
+        //因为一行里面可能有多个时间，所以time有可能是[xx:xx.xx][xx:xx.xx][xx:xx.xx]的形式，需要进一步分隔
+        time.forEach(function(v1, i1, a1) {
+            //去掉时间里的中括号得到xx:xx.xx
+            var t = v1.slice(1, -1).split(':');
+            //将结果压入最终数组
+            console.log(value)
+            result.push([parseInt(t[0], 10) * 60 + parseFloat(t[1]), value]);
+        });
+    });
+    //最后将结果数组中的元素按时间大小排序，以便保存之后正常显示歌词
+    result.sort(function(a, b) {
+        return a[0] - b[0];
+    });
+    return result;
+}
+
+var audio = document.getElementsByTagName('audio')[0];
+var lyricContainer = document.getElementById('lyric');
+audio.addEventListener('timeupdate', function(e) {
+	percent = (this.currentTime / this.duration) * 100;
+	circlePercent(percent);
+	for (var i = 0, l = lyric.length; i < l; i++) {
+        if (this.currentTime > lyric[i][0]) {
+            lyricContainer.textContent = lyric[i][1];
+            if (lyric[i][1] !== ''){
+				document.title = lyric[i][1];
+			}else{
+			    document.title = '{{title}} - 虾米音乐播放器';
+			};
+        };
+    };
+},false);
+
+audio.addEventListener('error', function(e) {
+  document.getElementById("play").innerHTML = '<i class="flaticon-play43"></i>';
+  document.getElementById("pic").className = '';
+  play= false;
+},false);
+
+audio.addEventListener('ended', function(e) {
+  document.getElementById("play").innerHTML = '<i class="flaticon-play43"></i>';
+  document.getElementById("pic").className = '';
+  play= false;
+},false);
+
+var play= false;
+document.getElementById("play").onclick=function(){
+    if (play==false){
+        audio.play();
+        document.getElementById("play").innerHTML = '<i class="flaticon-pause12"></i>';
+        document.getElementById("pic").className = 'rotate';
+        play= true;
+    }
+    else{
+        audio.pause();
+        document.getElementById("play").innerHTML = '<i class="flaticon-play43"></i>';
+        document.getElementById("pic").className = '';
+        play= false;
+    }
+};
+
+lyric = parseLyric(text);
+</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+Flask
+requests
+pyyaml
+ua-parser
+gunicorn==0.14.6
