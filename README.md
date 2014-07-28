@@ -6,7 +6,7 @@
 
 ###演示
 虾米播放器（推荐）：  
-http://miantiao.jd-app.com/xiamiplayer/63608
+http://miantiao.jd-app.com/xiamiplayer/63608  
 网易云音乐播放器（备用）：  
 http://miantiao.jd-app.com/m163player/28815250
 
