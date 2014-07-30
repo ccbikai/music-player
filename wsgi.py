@@ -11,6 +11,16 @@ from ua_parser import user_agent_parser
 
 application = app = Flask(__name__)
 
+@app.before_request
+def before_request():
+    headers = request.headers
+    if 'Python' in headers.get('User-Agent'):
+        return '自己去虾米抓数据 http://www.xiami.com/app/iphone/song/id/123 123换成ID'
+    if 'curl' in headers.get('User-Agent'):
+        return '自己去虾米抓数据 http://www.xiami.com/app/iphone/song/id/123 123换成ID'
+    if 'wget' in headers.get('User-Agent'):
+        return '自己去虾米抓数据 http://www.xiami.com/app/iphone/song/id/123 123换成ID'
+
 @app.route('/')
 def index():
     return redirect('http://miantiao.me/', code=301)
@@ -22,9 +32,7 @@ def xiami(id):
     }
     url = 'http://www.xiami.com/app/iphone/song/id/' + id
     try:
-        print url
         r = requests.get(url,headers=headers)
-        print r.text
     except:
         return '连接虾米服务器失败'
     info = r.json()
