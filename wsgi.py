@@ -67,7 +67,7 @@ def xiamiplayer(id):
         r = requests.get(lyricurl,headers=headers)
         lyric = r.text.replace('\n','#').replace('\r','').replace('######','#').replace('######','#').replace('####','#').replace('###','#').replace('##','#')
     except:
-        lyric = "[00:00.00]没有歌词"
+        lyric = "[00:00.00]" + title
     return render_template('xiamiplayer.html',songurl=songurl,songpic=songpic,title=title,singer=singer,lyric=lyric,id=id)
 
 @app.route('/m163/<id>.mp3')
@@ -131,10 +131,12 @@ def m163player(id):
         return redirect(flashurl, code=303)
     try:
         r = requests.get(lyricurl,headers=headers)
-        lyric = r.json().get('lyric')
+        lyric = r.json()['lyric']
+        if '[' not in lyric:
+			lyric = "[00:00.00]" + title
         lyric = lyric.replace('\n','#').replace('\r','').replace('######','#').replace('######','#').replace('####','#').replace('###','#').replace('##','#')
     except:
-        lyric = "[00:00.00]没有歌词"
+        lyric = "[00:00.00]" + title
     return render_template('m163player.html',songurl=songurl,songpic=songpic,title=title,singer=singer,lyric=lyric,id=id,singerid=singerid)
 
 
