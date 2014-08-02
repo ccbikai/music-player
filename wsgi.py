@@ -113,7 +113,7 @@ def m163player(id):
     except:
         return '连接网易音乐服务器失败'
     info = r.json()
-    songurl=info['songs'][0].get('mp3Url','http://miantiao.me')
+    songurl=info['songs'][0].get('mp3Url','http://miantiao.me').replace('http://m','http://p')
     songpic = info['songs'][0]['album'].get('picUrl','http://miantiao.me')
     title = info['songs'][0].get('name','歌曲名称')
     singer = info['songs'][0]['artists'][0].get('name','演唱者')
