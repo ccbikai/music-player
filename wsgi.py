@@ -90,7 +90,7 @@ def m163(id):
     except:
         return '连接网易音乐服务器失败'
     info = r.json()
-    songurl=info['songs'][0].get('mp3Url','http://miantiao.me')
+    songurl=info['songs'][0].get('mp3Url','http://miantiao.me').replace('http://m','http://p')
     return redirect(songurl, code=303)
     
 @app.route('/m163player/<id>')
