@@ -283,14 +283,15 @@ audio.addEventListener('timeupdate', function(e) {
 	percent = (this.currentTime / this.duration) * 100;
 	circlePercent(percent);
 	for (var i = 0, l = lyric.length; i < l; i++) {
-        if (this.currentTime > lyric[i][0]) {
-            lyricContainer.textContent = lyric[i][1];
-            if (lyric[i][1] !== ''){
-				document.title = lyric[i][1];
+       if (lyric.length > 0 && this.currentTime > lyric[0][0]) {
+       		lyricContainer.textContent = lyric[0][1];
+			lyric.shift();
+			if (lyric[i][1] !== ''){
+				document.title = lyric[0][1];
 			}else{
 			    document.title = '{{title}} - 虾米音乐播放器';
 			};
-        };
+    	};
     };
 },false);
 
