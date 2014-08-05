@@ -58,7 +58,9 @@ def xiamiplayer(id):
         info = r.json()
     except:
         return '连接虾米服务器失败'
-    songurl = info.get('location')
+    songurl = info.get('location','error');
+    if songurl == 'error':
+        return '获取歌词信息失败，请检查是否有该歌曲ID'
     songpic = info.get('album_logo')
     title = info.get('name')
     singer = info.get('singers')
