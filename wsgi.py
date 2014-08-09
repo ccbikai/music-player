@@ -8,6 +8,7 @@ from flask import *
 import json
 import requests
 from ua_parser import user_agent_parser
+import xmltodict
 
 application = app = Flask(__name__)
 
@@ -28,16 +29,27 @@ def index():
 @app.route('/xiami/<id>.mp3')
 def xiami(id):
     headers = {'User-Agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 7_0 like Mac OS X; en-us) AppleWebKit/537.51.1 (KHTML, like Gecko) Version/7.0 Mobile/11A465 Safari/9537.53',
-    'Referer':'http://www.xiami.com/app/iphone/song/id/' + id
+    'Referer':'http://www.xiami.com/song/playlist/id/' + id
     }
-    url = 'http://www.xiami.com/app/iphone/song/id/' + id
+    url = 'http://www.xiami.com/song/playlist/id/' + id
     try:
         r = requests.get(url,headers=headers)
+        r.encode='uft-8'
     except:
         return '连接虾米服务器失败'
-    info = r.json()
-    songurl=info['location']
+    info = xmltodict.parse(r.text)
+    songurl=info['playlist']['trackList']['track']['location']
+    songurl=xiamidecode(songurl)
     return redirect(songurl, code=303)
+
+def xiamidecode(location):
+    num = int(location[0])
+    avg_len, remainder = int(len(location[1:]) / num), int(len(location[1:]) % num)
+    result = [location[i * (avg_len + 1) + 1: (i + 1) * (avg_len + 1) + 1] for i in range(remainder)]
+    result.extend([location[(avg_len + 1) * remainder:][i * avg_len + 1: (i + 1) * avg_len + 1] for i in range(num-remainder)])
+    url = urllib.unquote(''.join([''.join([result[j][i] for j in range(num)]) for i in range(avg_len)]) + \
+                        ''.join([result[r][-1] for r in range(remainder)])).replace('^','0')
+    return url
 
 @app.route('/xiamiplayer/<id>')
 def xiamiplayer(id):
@@ -50,19 +62,21 @@ def xiamiplayer(id):
         flashurl = 'http://www.xiami.com/res/app/img/swf/weibo.swf?dataUrl=http://www.xiami.com/app/player/song/id/{0}/type/7/uid/0'.format(id)
         return redirect(flashurl, code=303)
     headers = {'User-Agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 7_0 like Mac OS X; en-us) AppleWebKit/537.51.1 (KHTML, like Gecko) Version/7.0 Mobile/11A465 Safari/9537.53',
-    'Referer':'http://www.xiami.com/app/iphone/song/id/' + id
+    'Referer':'http://www.xiami.com/song/playlist/id/' + id
     }
-    url = 'http://www.xiami.com/app/iphone/song/id/' + id
+    url = 'http://www.xiami.com/song/playlist/id/' + id
     try:
         r = requests.get(url,headers=headers)
-        info = r.json()
+        r.encode='uft-8'
     except:
         return '连接虾米服务器失败'
-    songurl = info.get('location')
-    songpic = info.get('album_logo')
-    title = info.get('name')
-    singer = info.get('singers')
-    lyricurl = info.get('lyric')
+    info = xmltodict.parse(r.text)
+    songurl=info['playlist']['trackList']['track'].get('location')
+    songurl=xiamidecode(songurl)
+    songpic = info['playlist']['trackList']['track'].get('album_pic').replace('.jpg','_2.jpg')
+    title = info['playlist']['trackList']['track'].get('title')
+    singer = info['playlist']['trackList']['track'].get('artist')
+    lyricurl = info['playlist']['trackList']['track'].get('lyric')
     try:
         r = requests.get(lyricurl,headers=headers)
         lyric = r.text.replace('\n','#').replace('\r','').replace('######','#').replace('######','#').replace('####','#').replace('###','#').replace('##','#')
