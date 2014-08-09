@@ -2,5 +2,4 @@ Flask
 requests
 pyyaml
 ua-parser
-xmltodict
 gunicorn==0.14.6
