@@ -37,7 +37,10 @@ def xiami(id):
         r.encode='uft-8'
     except:
         return '连接虾米服务器失败'
-    info = xmltodict.parse(r.text)
+    try:
+        info = xmltodict.parse(r.text)
+    except:
+        return '获取歌词信息失败，请检查是否有该歌曲ID'
     songurl=info['playlist']['trackList']['track']['location']
     songurl=xiamidecode(songurl)
     return redirect(songurl, code=303)
@@ -70,7 +73,10 @@ def xiamiplayer(id):
         r.encode='uft-8'
     except:
         return '连接虾米服务器失败'
-    info = xmltodict.parse(r.text)
+    try:
+        info = xmltodict.parse(r.text)
+    except:
+        return '获取歌词信息失败，请检查是否有该歌曲ID'
     songurl=info['playlist']['trackList']['track'].get('location')
     songurl=xiamidecode(songurl)
     songpic = info['playlist']['trackList']['track'].get('album_pic').replace('.jpg','_2.jpg')
