@@ -39,9 +39,10 @@ def xiami(id):
         return '连接虾米服务器失败'
     try:
         info = xmltodict.parse(r.text)
+        #print r.text
+        songurl=info['playlist']['trackList']['track']['location']
     except:
         return '获取歌词信息失败，请检查是否有该歌曲ID'
-    songurl=info['playlist']['trackList']['track']['location']
     songurl=xiamidecode(songurl)
     return redirect(songurl, code=303)
 
@@ -75,17 +76,21 @@ def xiamiplayer(id):
         return '连接虾米服务器失败'
     try:
         info = xmltodict.parse(r.text)
+        #print r.text
+        songurl=info['playlist']['trackList']['track'].get('location')
+        songurl=xiamidecode(songurl)
+        songpic = info['playlist']['trackList']['track'].get('album_pic').replace('.jpg','_2.jpg')
+        title = info['playlist']['trackList']['track'].get('title')
+        singer = info['playlist']['trackList']['track'].get('artist')
+        lyricurl = info['playlist']['trackList']['track'].get('lyric')
     except:
         return '获取歌词信息失败，请检查是否有该歌曲ID'
-    songurl=info['playlist']['trackList']['track'].get('location')
-    songurl=xiamidecode(songurl)
-    songpic = info['playlist']['trackList']['track'].get('album_pic').replace('.jpg','_2.jpg')
-    title = info['playlist']['trackList']['track'].get('title')
-    singer = info['playlist']['trackList']['track'].get('artist')
-    lyricurl = info['playlist']['trackList']['track'].get('lyric')
     try:
-        r = requests.get(lyricurl,headers=headers)
-        lyric = r.text.replace('\n','#').replace('\r','').replace('######','#').replace('######','#').replace('####','#').replace('###','#').replace('##','#')
+        lyric = requests.get(lyricurl,headers=headers)
+        #print r.text
+        if '[' not in lyric:
+            lyric = "[00:00.00]" + title        
+        lyric = lyric.replace('''\'''',''' \\\' ''').replace('\n','#').replace('\r','').replace('######','#').replace('######','#').replace('####','#').replace('###','#').replace('##','#')
     except:
         lyric = "[00:00.00]" + title
     return render_template('xiamiplayer.html',songurl=songurl,songpic=songpic,title=title,singer=singer,lyric=lyric,id=id)
@@ -104,15 +109,19 @@ def m163(id):
     }
     url = 'http://music.163.com/api/song/detail?ids=[' + id + ']'
     try:
-        print url
+        #print url
         r = requests.get(url,headers=headers)
-        print r.text
+        #print r.text
     except:
         return '连接网易音乐服务器失败'
-    info = r.json()
+    try:
+        info = xmltodict.parse(r.text)
+        info = r.json()
+    except:
+        return '获取歌词信息失败，请检查是否有该歌曲ID'
     songurl=info['songs'][0].get('mp3Url','http://miantiao.me').replace('http://m','http://p')
     return redirect(songurl, code=303)
-    
+
 @app.route('/m163player/<id>')
 def m163player(id):
     headers = {
@@ -127,17 +136,20 @@ def m163player(id):
     }
     url = 'http://music.163.com/api/song/detail?ids=[' + id + ']'
     try:
-        print url
+        #print url
         r = requests.get(url,headers=headers)
-        print r.text
+        #print r.text
     except:
         return '连接网易音乐服务器失败'
-    info = r.json()
-    songurl=info['songs'][0].get('mp3Url','http://miantiao.me').replace('http://m','http://p')
-    songpic = info['songs'][0]['album'].get('picUrl','http://miantiao.me')
-    title = info['songs'][0].get('name','歌曲名称')
-    singer = info['songs'][0]['artists'][0].get('name','演唱者')
-    singerid = info['songs'][0]['artists'][0].get('id','1')
+    try:
+            info = r.json()
+            songurl=info['songs'][0].get('mp3Url','http://miantiao.me').replace('http://m','http://p')
+            songpic = info['songs'][0]['album'].get('picUrl','http://miantiao.me')
+            title = info['songs'][0].get('name','歌曲名称')
+            singer = info['songs'][0]['artists'][0].get('name','演唱者')
+            singerid = info['songs'][0]['artists'][0].get('id','1')
+    except:
+        return '获取歌词信息失败，请检查是否有该歌曲ID'
     lyricurl = 'http://music.163.com/api/song/media?id=' + id
     ua = user_agent_parser.Parse(request.headers.get('User-Agent'))
     try:
@@ -152,9 +164,10 @@ def m163player(id):
     try:
         r = requests.get(lyricurl,headers=headers)
         lyric = r.json()['lyric']
+        #print lyric
         if '[' not in lyric:
-			lyric = "[00:00.00]" + title
-        lyric = lyric.replace('\n','#').replace('\r','').replace('######','#').replace('######','#').replace('####','#').replace('###','#').replace('##','#')
+            lyric = "[00:00.00]" + title
+        lyric = lyric.replace('''\'''',''' \\\' ''').replace('\n','#').replace('\r','').replace('######','#').replace('######','#').replace('####','#').replace('###','#').replace('##','#')
     except:
         lyric = "[00:00.00]" + title
     return render_template('m163player.html',songurl=songurl,songpic=songpic,title=title,singer=singer,lyric=lyric,id=id,singerid=singerid)
