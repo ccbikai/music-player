@@ -19,6 +19,7 @@ if (audiocanplay == false){
     a{
     	color: #ccc;
     	text-decoration: none;
+    	outline:none;
     }
     @font-face {
     font-family: "Flaticon";
@@ -83,13 +84,13 @@ text-transform: none;
     	background-size: cover;
     	border-radius: 50%;
     	z-index: 3;
-    }
-    .rotate{
-      animation: pic 15s linear infinite;
-      -webkit-animation: pic 15s linear infinite;
-      -moz-animation: pic 15s linear infinite;
-      -ms-animation: pic 15s linear infinite;
-      -o-animation: pic 15s linear infinite;
+		-webkit-animation: pic 15s linear infinite;
+		-moz-animation: pic 15s linear infinite;
+		-ms-animation: pic 15s linear infinite;
+		-o-animation: pic 15s linear infinite;
+		animation: pic 15s linear infinite;
+		-webkit-animation-play-state: paused;
+		animation-play-state: paused;
     }
      @-webkit-keyframes pic {  
      from {  
@@ -279,6 +280,11 @@ function parseLyric(text) {
     return result;
 }
 
+function changeState(state) {
+ 	document.getElementById("pic").style.animationPlayState = state;
+ 	document.getElementById("pic").style.webkitAnimationPlayState = state; // Webkit Prefix
+}
+
 var audio = document.getElementsByTagName('audio')[0];
 var lyricContainer = document.getElementById('lyric');
 audio.addEventListener('timeupdate', function(e) {
@@ -298,13 +304,13 @@ audio.addEventListener('timeupdate', function(e) {
 
 audio.addEventListener('error', function(e) {
   document.getElementById("play").innerHTML = '<i class="flaticon-play43"></i>';
-  document.getElementById("pic").className = '';
+  changeState("paused");
   play= false;
 },false);
 
 audio.addEventListener('ended', function(e) {
   document.getElementById("play").innerHTML = '<i class="flaticon-play43"></i>';
-  document.getElementById("pic").className = '';
+  changeState("paused");
   play= false;
   circlePercent(0);
 },false);
@@ -314,13 +320,13 @@ document.getElementById("play").onclick=function(){
     if (play==false){
         audio.play();
         document.getElementById("play").innerHTML = '<i class="flaticon-pause12"></i>';
-        document.getElementById("pic").className = 'rotate';
+        changeState("running");
         play= true;
     }
     else{
         audio.pause();
         document.getElementById("play").innerHTML = '<i class="flaticon-play43"></i>';
-        document.getElementById("pic").className = '';
+        changeState("paused");
         play= false;
     }
 };
